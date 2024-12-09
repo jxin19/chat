@@ -142,10 +142,6 @@ web
 - `Flyway`로 변경 이력을 관리합니다.
 - 충돌없이 DB 변경사항을 공유할 수 있습니다.
 
-### 테스트코드
-- 단위테스트: `xxxTests`, `xxxServiceTests`
-- 통합테스트: `xxxIntegrationTests`
-
 
 ## 실행 방법
 
@@ -171,7 +167,7 @@ web
 3. API 애플리케이션을 빌드하고 실행합니다:
 
    `./gradlew bootRun`
-    - 애플리케이 션은 http://localhost:8080 에서 실행됩니다.
+    - 애플리케이션은 http://localhost:8080 에서 실행됩니다.
 
 
 4. Web 애플리케이션을 실행합니다:
