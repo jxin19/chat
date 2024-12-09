@@ -1,0 +1,12 @@
+{
+  "namespace": "com.chat.homework.message.application.dto",
+  "type": "record",
+  "name": "MessageAvro",
+  "fields": [
+    {"name": "roomId", "type": "long"},
+    {"name": "senderId", "type": "long"},
+    {"name": "senderName", "type": "string"},
+    {"name": "content", "type": "string"},
+    {"name": "timestamp", "type": "long"}
+  ]
+}

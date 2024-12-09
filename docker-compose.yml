@@ -1,0 +1,126 @@
+services:
+  chat-db:
+    image: postgres:17.2-alpine
+    container_name: chat-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: chat
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      TZ: Asia/Seoul
+    networks:
+      - chat-network
+
+  chat-mongodb:
+    image: mongo:7.0
+    container_name: chat-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: chat
+      MONGODB_AUTH_MECHANISM: SCRAM-SHA-1
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - chat-network
+
+  chat-redis:
+    image: redis:latest
+    container_name: chat-redis
+    ports:
+      - 6378:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
+    labels:
+      - name=redis
+      - mode=standalone
+    command: redis-server /usr/local/conf/redis.conf
+    networks:
+      - chat-network
+
+  chat-zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: chat-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    networks:
+      - chat-network
+
+  chat-kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: chat-kafka
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: chat-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://chat-kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    depends_on:
+      - chat-db
+      - chat-mongodb
+      - chat-redis
+      - chat-zookeeper
+    networks:
+      - chat-network
+
+  chat-schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    container_name: chat-schema-registry
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://chat-kafka:29092,PLAINTEXT_HOST://localhost:9092
+      SCHEMA_REGISTRY_HOST_NAME: chat-schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    depends_on:
+      - chat-zookeeper
+      - chat-kafka
+    networks:
+      - chat-network
+
+  chat-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: chat-kafka-ui
+    ports:
+      - 9091:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: chat-kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: chat-kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: chat-zookeeper:2181
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://chat-schema-registry:8081
+    depends_on:
+      - chat-zookeeper
+      - chat-kafka
+      - chat-schema-registry
+    networks:
+      - chat-network
+
+  chat-api:
+    container_name: chat-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 8080:8080
+    networks:
+      - chat-network
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  chat-network:
+    name: chat-mongodb-data
