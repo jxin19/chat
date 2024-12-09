@@ -1,0 +1,90 @@
+spring:
+  messages:
+    basename: message
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    default-locale: ko_KR
+
+  datasource:
+    url: jdbc:postgresql://chat-db:5432/chat
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+
+  redis:
+    host: chat-redis
+    port: 6379
+    password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+        order_updates: true
+    open-in-view: false
+
+  sql:
+    init:
+      mode: always
+
+  flyway:
+    url: jdbc:postgresql://chat-db:5432/chat
+    user: postgres
+    password: password
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1
+    enabled: true
+
+  data:
+    mongodb:
+      uri: mongodb://root:password@chat-mongodb:27017/chat?authSource=admin
+
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+
+  kafka:
+    bootstrap-servers: chat-kafka:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      batch-size: 100
+      linger-ms: 10
+      acks: all
+      retries: 3
+      properties:
+        schema.registry.url: http://chat-schema-registry:8081
+    consumer:
+      group-id: chat-message-processor
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      max-poll-records: 100
+      enable-auto-commit: false
+      properties:
+        schema.registry.url: http://chat-schema-registry:8081
+        specific.avro.reader: true
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      type: BATCH
+      concurrency: 3
+
+cache:
+  member:
+    ttl: 3600
+  room:
+    ttl: 1800
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs

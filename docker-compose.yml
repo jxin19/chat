@@ -114,6 +114,32 @@ services:
       context: .
     ports:
       - 8080:8080
+    depends_on:
+      - chat-db
+      - chat-mongodb
+      - chat-redis
+      - chat-zookeeper
+      - chat-kafka
+      - chat-schema-registry
+    networks:
+      - chat-network
+
+  chat-web:
+    container_name: chat-web
+    build:
+      dockerfile: Dockerfile
+      context: ./web
+    ports:
+      - 5173:5173
+    command: npm run preview -- --host 0.0.0.0 --port 5173
+    depends_on:
+      - chat-db
+      - chat-mongodb
+      - chat-redis
+      - chat-zookeeper
+      - chat-kafka
+      - chat-schema-registry
+      - chat-api
     networks:
       - chat-network
 
@@ -123,4 +149,4 @@ volumes:
 
 networks:
   chat-network:
-    name: chat-mongodb-data
+    driver: bridge

@@ -72,7 +72,7 @@ export const useChatStore = defineStore('chat', {
         console.log('Starting connection attempt...');
 
         // SockJS 옵션 추가
-        const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws-chat`, null, {
+        const socket = new SockJS(`http://localhost:8080/ws-chat`, null, {
           transports: ['websocket', 'xhr-streaming', 'xhr-polling'],
           timeout: 10000
         });

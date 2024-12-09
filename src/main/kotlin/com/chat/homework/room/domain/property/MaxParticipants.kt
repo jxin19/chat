@@ -13,7 +13,7 @@ class MaxParticipants {
     private var _value: Int
 
     constructor(maxParticipants: Int) {
-        require(maxParticipants in (MAX_VALUE + 1) downTo MIN_VALUE) { "최대 인원수는 $MIN_VALUE ~ $MAX_VALUE 명 이내로 설정해주세요." }
+        require(maxParticipants in MIN_VALUE..MAX_VALUE) { "최대 인원수는 $MIN_VALUE ~ $MAX_VALUE 명 이내로 설정해주세요." }
         this._value = maxParticipants
     }
 

@@ -36,7 +36,7 @@
           class="message-input"
           maxlength="1000"
         />
-        <span class="character-count" :class="{ 'near-limit': inputMessage.length >= 80 }">
+        <span class="character-count" :class="{ 'near-limit': inputMessage.length >= 900 }">
          {{ inputMessage.length }}/1000
        </span>
       </div>
