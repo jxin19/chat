@@ -22,6 +22,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: chat
       MONGODB_AUTH_MECHANISM: SCRAM-SHA-1
+      TZ: Asia/Seoul
     volumes:
       - mongo-data:/data/db
     networks:
