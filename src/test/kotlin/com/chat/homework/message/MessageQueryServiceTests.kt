@@ -1,5 +1,6 @@
 package com.chat.homework.message
 
+import com.chat.homework.common.util.EncryptionUtil
 import com.chat.homework.message.application.MessageQueryService
 import com.chat.homework.message.application.dto.MessageSearchServiceRequest
 import com.chat.homework.message.application.impl.MessageQueryServiceImpl
@@ -22,6 +23,7 @@ class MessageQueryServiceTests {
     fun setUp() {
         messageRepository = mockk()
         messageQueryService = MessageQueryServiceImpl(messageRepository)
+        EncryptionUtil.setTestKey("ENCRYPTION_TEST_KEY_HERE")
     }
 
     @Test

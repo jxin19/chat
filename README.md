@@ -136,6 +136,8 @@ web
 - Kafka Producer/Consumer가 Queue의 역할을 하여 DB 부하를 방지하고, 메시지 저장 프로세서를 분리 확장 가능합니다.
   - Producer/Consumer 간 Schema Registry(Avro)를 사용하여 데이터 구조를 정의하고 관리합니다.
 - 코루틴을 활용하여 비동기로 채팅 메시지를 각 클라이언트에 전파합니다.
+- 채팅 메시지는 암호화/복호화(AES알고리즘) 합니다.
+  - 관련 클래스: EncryptionUtil, EncryptionKeyProvider, MongoConfig
 
 ### DB 마이그레이션
 - `Flyway`로 변경 이력을 관리합니다.

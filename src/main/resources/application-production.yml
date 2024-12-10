@@ -83,6 +83,9 @@ cache:
   room:
     ttl: 1800
 
+encryption:
+  key: "YOUR_ENCRYPTION_KEY_HERE"
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
