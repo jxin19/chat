@@ -118,7 +118,7 @@ web
 - 도메인 주도 설계 원칙 적용
 - id 값을 제외한 프로퍼티는 원시타입이 아닌 Wrapper Class로 생성하여 재사용성을 높이도록 했습니다.
 - Wrapper Class에서 유효성검사 기능을 활용하여 불변성을 보장하고, 유효성검사를 활용하여 Type-safety 합니다.
-- 공용 검증 로직 인터페이스(`StringValidator`, `PriceValidator`)를 활용하고 있습니다.
+- 공용 검증 로직 인터페이스(`StringValidator`)를 활용하고 있습니다.
 
 ### Command, Query 분리
 - 상태 변경 로직과 조회 로직을 분리하였습니다.
